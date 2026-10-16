@@ -108,7 +108,7 @@
     const groupOptions=(selected,all=false)=> (all?'<option value="0">全部組別（'+members.length+' 人）</option>':'')+groups.map(g=>'<option value="'+g.id+'"'+(Number(selected)===g.id?' selected':'')+'>'+esc(g.name)+'（'+groupMembers(g.id).length+' 人）</option>').join('');
     const memberGroupTags=m=>'<div class="member-groups"><span class="tag group-tag">'+esc(groupById(m.groupId)?.name||'尚未分組')+'</span>'+(isGroupLeader(m)?'<span class="badge orange">組長</span>':'')+'</div>';
     function reconcileGroupLeaders(){groups.forEach(g=>{if(!groupLeader(g.id))g.leaderId=groupMembers(g.id,true)[0]?.id||null;});}
-    function groupHomeCard(){
+    function groupHomeCard(){return '';  // MAX 2026-10-16 21:23 鋼鐵拓展會「我的組員那邊你沒刪掉啊」：首頁不放組員卡，組別只在漢堡選單
       const me=currentUser(),g=groupById(me.groupId),leader=groupLeader(g.id),list=groupMembers(g.id,true);
       if(isGroupLeader(me))return '<section class="card my-group" aria-label="我的組員"><h2>我的組員（'+esc(g.name)+'・'+list.length+'人）</h2><p class="group-intro">'+esc(me.name)+'組長，組內夥伴的聯絡方式都在這裡。</p>'+list.map(m=>'<div class="group-person"><div><strong>'+esc(m.name)+'</strong>'+(m.id===me.id?' <span class="badge orange">組長・我</span>':'')+'<p class="company">'+esc(m.company)+'</p></div><button class="call-mini" data-action="contact" data-kind="phone" data-id="'+m.id+'" aria-label="撥打給'+esc(m.name)+'">'+icon('phone')+'撥打</button></div>').join('')+'</section>';
       return '<section class="card my-group"><h2>我在'+esc(g.name)+'</h2><div class="group-leader-line"><span>組長：'+esc(leader?.name||'待指派')+'</span>'+(leader?'<button class="call-mini" data-action="contact" data-kind="phone" data-id="'+leader.id+'" aria-label="撥打給組長'+esc(leader.name)+'">'+icon('phone')+'撥打</button>':'')+'</div></section>';
